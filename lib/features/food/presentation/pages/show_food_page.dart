@@ -375,19 +375,19 @@ class _ShopeProductViewPageState extends State<ShopeProductViewPage> {
           ? CircularProgressIndicator()
           : Column(
               children: [
-                // ListView.builder(
-                //     shrinkWrap: true,
-                //     itemCount: productsCartMain2.length,
-                //     itemBuilder: (context, index) {
-                //       return Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //           children: [
-                //             Text(
-                //                 'Product Name : ${productsCartMain2[index][0].product.modelName}'),
-                //             Text(
-                //                 'Quantity : ${productsCartMain2[index][1].toString()}'),
-                //           ]);
-                //     }),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: productsCartMain2.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                                'Product Name : ${productsCartMain2[index][0].product.modelName}'),
+                            Text(
+                                'Quantity : ${productsCartMain2[index][1].toString()}'),
+                          ]);
+                    }),
 
                 // Text(productsCartMain2[0][0].product.modelName.toString()),
                 // Text(categoryBasedFood.length.toString()),
