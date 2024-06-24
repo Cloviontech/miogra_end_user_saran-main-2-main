@@ -128,6 +128,12 @@ class _ShopeProductViewPageState extends State<ShopeProductViewPage> {
     }
   }
 
+//  saran
+
+  List<int> quantityOfItems = [];
+
+  bool loadingFetchCategoryBasedFood = true;
+
   Future<void> fetchCategoryBasedFood() async {
     final response = await http.get(Uri.parse(
         "https://${ApiServices.ipAddress}/category_based_food/${widget.subCategoryName}"));
@@ -138,6 +144,8 @@ class _ShopeProductViewPageState extends State<ShopeProductViewPage> {
         categoryBasedFood = jsonResponse
             .map((data) => CategoryBasedFood.fromJson(data))
             .toList();
+        loadingFetchCategoryBasedFood = false;
+        quantityOfItems = List.generate(categoryBasedFood.length, (_) => 0);
       });
     } else {
       throw Exception('Failed to load data');
@@ -194,7 +202,7 @@ class _ShopeProductViewPageState extends State<ShopeProductViewPage> {
   void initState() {
     super.initState();
     getUserIdInSharedPreferences();
-    fetchDataFromListJson();
+    // fetchDataFromListJson();
     fetchCategoryBasedFood();
   }
 
@@ -294,7 +302,7 @@ class _ShopeProductViewPageState extends State<ShopeProductViewPage> {
   double totalPriceS = 0;
   List totalPriceCalc = [];
 
-  List<int> quantityOfItems = List.generate(categoryBasedFood.length, (_) => 0);
+  // List<int> quantityOfItems = List.generate(categoryBasedFood.length, (_) => 0);
 
   calcTotalPrice() {
     totalPriceS = 0;
@@ -356,659 +364,671 @@ class _ShopeProductViewPageState extends State<ShopeProductViewPage> {
             //     child: Text('oldc')),
 
             //
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (
-                    context,
-                  ) {
-                    return const SelectProduct();
-                  }));
-                },
-                child: Text(widget.categoryName.toUpperCase())),
+            Text(widget.categoryName.toUpperCase()),
             //
           ],
         ),
         backgroundColor: const Color(0xff870081),
         foregroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: productsCartMain2.length,
-              itemBuilder: (context, index) {
-                return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                          'Product Name : ${productsCartMain2[index][0].product.modelName}'),
-                      Text(
-                          'Quantity : ${productsCartMain2[index][1].toString()}'),
-                    ]);
-              }),
+      body: loadingFetchCategoryBasedFood
+          ? CircularProgressIndicator()
+          : Column(
+              children: [
+                // ListView.builder(
+                //     shrinkWrap: true,
+                //     itemCount: productsCartMain2.length,
+                //     itemBuilder: (context, index) {
+                //       return Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //           children: [
+                //             Text(
+                //                 'Product Name : ${productsCartMain2[index][0].product.modelName}'),
+                //             Text(
+                //                 'Quantity : ${productsCartMain2[index][1].toString()}'),
+                //           ]);
+                //     }),
 
-          // Text(productsCartMain2[0][0].product.modelName.toString()),
-          // Text(categoryBasedFood.length.toString()),
-          // Text(quantity.toString()),
-          // Text(quantityOfItems.length.toString()),
-          // Text(selectedProducts.length.toString()),
+                // Text(productsCartMain2[0][0].product.modelName.toString()),
+                // Text(categoryBasedFood.length.toString()),
+                // Text(quantity.toString()),
+                // Text(quantityOfItems.length.toString()),
+                // Text(selectedProducts.length.toString()),
 
-          // Text(cartProducts[1].product!.modelName.toString()),
+                // Text(cartProducts[1].product!.modelName.toString()),
 
-          ListView.builder(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 5,
-              vertical: 5,
-            ),
-            itemCount: categoryBasedFood.length,
-            shrinkWrap: true,
-            primary: false,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => GoToOrder(
-                    //       uId: userId,
-                    //       category: category,
-                    //       link: imageUrl,
-                    //       productId: productid,
-                    //       shopId: shopeid,
-                    //       totalPrice: sellingPrice,
-                    //     ),
-                    //   ),
-                    // );
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      // color: Color.fromARGB(255, 249, 227, 253),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  // color: const Color.fromARGB(
-                                  //     255, 249, 227, 253),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child:
-                                        // Image.network(imageUrl.toString()),
-                                        Image.network(categoryBasedFood[index]
-                                            .product!
-                                            .primaryImage
-                                            .toString()),
-                                  ),
-                                ),
-                                Row(children: [
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        bottomLeft: Radius.circular(5),
+                ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 5,
+                  ),
+                  itemCount: categoryBasedFood.length,
+                  shrinkWrap: true,
+                  primary: false,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => GoToOrder(
+                          //       uId: userId,
+                          //       category: category,
+                          //       link: imageUrl,
+                          //       productId: productid,
+                          //       shopId: shopeid,
+                          //       totalPrice: sellingPrice,
+                          //     ),
+                          //   ),
+                          // );
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            // color: Color.fromARGB(255, 249, 227, 253),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 100,
+                                        width: 100,
+                                        // color: const Color.fromARGB(
+                                        //     255, 249, 227, 253),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child:
+                                              // Image.network(imageUrl.toString()),
+                                              Image.network(
+                                                  categoryBasedFood[index]
+                                                      .product!
+                                                      .primaryImage
+                                                      .toString()),
+                                        ),
                                       ),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        quantityOfItems[index] > 0
-                                            ? setState(() {
-                                                quantityOfItems[index]--;
+                                      Row(children: [
+                                        Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: const BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(5),
+                                              bottomLeft: Radius.circular(5),
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              quantityOfItems[index] > 0
+                                                  ? setState(() {
+                                                      quantityOfItems[index]--;
+                                                      calcTotalPrice();
+                                                      // debugPrint(
+                                                      //     'decremented $quantity');
+                                                    })
+                                                  : null;
+
+                                              // updateQuantity(categoryBasedFood[index],
+                                              //     quantityOfItems[index]);
+
+                                              int listIndexMainCart =
+                                                  productsCartMain2.indexWhere(
+                                                      (nestedList) =>
+                                                          nestedList.contains(
+                                                              categoryBasedFood[
+                                                                  index]));
+
+                                              debugPrint(
+                                                  'productsCartMain2 : $productsCartMain2');
+
+                                              productsCartMain2.any((sublist) =>
+                                                      sublist.contains(
+                                                          categoryBasedFood[
+                                                              index]))
+                                                  ? (quantityOfItems[index] ==
+                                                          0)
+                                                      ? productsCartMain2
+                                                          .removeAt(
+                                                              listIndexMainCart)
+                                                      : productsCartMain2[
+                                                          listIndexMainCart] = [
+                                                          categoryBasedFood[
+                                                              index],
+                                                          quantityOfItems[index]
+                                                        ]
+                                                  : productsCartMain2.add([
+                                                      categoryBasedFood[index],
+                                                      quantityOfItems[index]
+                                                    ]);
+
+                                              debugPrint(
+                                                  'productsCartMain2 : $productsCartMain2');
+
+                                              // bool containsValue =
+                                              //     productsInCart.any((sublist) => sublist.contains(product));
+
+                                              // debugPrint(containsValue.toString());
+
+                                              // context.read<Fooddata>().addToCartwithQuantity(productToCart);
+
+                                              debugPrint(
+                                                  'Added to productsCartMain2 with qty Successfully');
+                                            },
+                                            icon: const Icon(
+                                              Icons.remove,
+                                              size: 15,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                          alignment: Alignment.center,
+                                          height: 30,
+                                          width: 30,
+                                          child: Text(
+                                              // loadingFetchCategoryBasedFood
+                                              //     ? '5'
+                                              //     :
+                                              quantityOfItems[index].toString()
+                                              // '1'
+                                              ),
+                                        ),
+                                        Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: const BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(5),
+                                              bottomRight: Radius.circular(5),
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              // context
+                                              //     .read<Fooddata>()
+                                              //     .incrementQuantity();
+
+                                              setState(() {
+                                                quantityOfItems[index]++;
                                                 calcTotalPrice();
                                                 debugPrint(
-                                                    'decremented $quantity');
-                                              })
-                                            : null;
+                                                    'Incremented ${quantityOfItems[index]}');
+                                              });
 
-                                        // updateQuantity(categoryBasedFood[index],
-                                        //     quantityOfItems[index]);
+                                              // updateQuantity(categoryBasedFood[index],
+                                              //     quantityOfItems[index]);
+                                              //
 
-                                        int listIndexMainCart =
-                                            productsCartMain2.indexWhere(
-                                                (nestedList) => nestedList
-                                                    .contains(categoryBasedFood[
-                                                        index]));
+                                              int listIndexMainCart =
+                                                  productsCartMain2.indexWhere(
+                                                      (nestedList) =>
+                                                          nestedList.contains(
+                                                              categoryBasedFood[
+                                                                  index]));
 
-                                        debugPrint(
-                                            'productsCartMain2 : $productsCartMain2');
+                                              debugPrint(
+                                                  'productsCartMain2 : $productsCartMain2');
 
-                                        productsCartMain2.any((sublist) =>
-                                                sublist.contains(
-                                                    categoryBasedFood[index]))
-                                            ? (quantityOfItems[index] == 0)
-                                                ? productsCartMain2
-                                                    .removeAt(listIndexMainCart)
-                                                : productsCartMain2[
-                                                    listIndexMainCart] = [
-                                                    categoryBasedFood[index],
-                                                    quantityOfItems[index]
-                                                  ]
-                                            : productsCartMain2.add([
-                                                categoryBasedFood[index],
-                                                quantityOfItems[index]
-                                              ]);
+                                              productsCartMain2.any((sublist) =>
+                                                      sublist.contains(
+                                                          categoryBasedFood[
+                                                              index]))
+                                                  ? (quantityOfItems[index] ==
+                                                          0)
+                                                      ? productsCartMain2
+                                                          .removeAt(
+                                                              listIndexMainCart)
+                                                      : productsCartMain2[
+                                                          listIndexMainCart] = [
+                                                          categoryBasedFood[
+                                                              index],
+                                                          quantityOfItems[index]
+                                                        ]
+                                                  : productsCartMain2.add([
+                                                      categoryBasedFood[index],
+                                                      quantityOfItems[index]
+                                                    ]);
 
-                                        debugPrint(
-                                            'productsCartMain2 : $productsCartMain2');
+                                              debugPrint(
+                                                  'productsCartMain2 : $productsCartMain2');
 
-                                        // bool containsValue =
-                                        //     productsInCart.any((sublist) => sublist.contains(product));
+                                              // bool containsValue =
+                                              //     productsInCart.any((sublist) => sublist.contains(product));
 
-                                        // debugPrint(containsValue.toString());
+                                              // debugPrint(containsValue.toString());
 
-                                        // context.read<Fooddata>().addToCartwithQuantity(productToCart);
+                                              // context.read<Fooddata>().addToCartwithQuantity(productToCart);
 
-                                        debugPrint(
-                                            'Added to productsCartMain2 with qty Successfully');
+                                              debugPrint(
+                                                  'Added to productsCartMain2 with qty Successfully');
+                                            },
+                                            icon: const Icon(
+                                              Icons.add,
+                                              size: 15,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
+                                        child: Text(
+                                          // productName
+                                          categoryBasedFood[index]
+                                              .product!
+                                              .modelName
+                                              .toString(),
+                                          overflow: TextOverflow.fade,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        // '₹$sellingPrice',
+                                        categoryBasedFood[index]
+                                            .product!
+                                            .price
+                                            .toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(8.0),
+                                  //   child: IconButton(
+                                  //     onPressed: () async {
+                                  //       await PersistentShoppingCart().addToCart(
+                                  //         PersistentShoppingCartItem(
+                                  //           productId: productid,
+                                  //           productName: productName,
+                                  //           productDescription: description,
+                                  //           unitPrice: price,
+                                  //           productThumbnail: imageUrl,
+                                  //           quantity: 1,
+                                  //         ),
+                                  //       );
+                                  //       addToCart(productid, category);
+                                  //     },
+                                  //     icon: SvgPicture.asset(
+                                  //       'assets/icons/cart.svg',
+                                  //       height: 30,
+                                  //       color: primaryColor,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showDetailsOfFood(
+                                            // description,
+                                            // imageUrl.toString(),
+
+                                            categoryBasedFood[index]
+                                                .product!
+                                                .productDescription
+                                                .toString(),
+                                            categoryBasedFood[index]
+                                                .product!
+                                                .primaryImage
+                                                .toString());
                                       },
                                       icon: const Icon(
-                                        Icons.remove,
-                                        size: 15,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1,
+                                        Icons.info,
                                         color: primaryColor,
                                       ),
                                     ),
-                                    alignment: Alignment.center,
-                                    height: 30,
-                                    width: 30,
-                                    child:
-                                        Text(quantityOfItems[index].toString()),
                                   ),
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(5),
-                                        bottomRight: Radius.circular(5),
-                                      ),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        // context
-                                        //     .read<Fooddata>()
-                                        //     .incrementQuantity();
-
-                                        setState(() {
-                                          quantityOfItems[index]++;
-                                          calcTotalPrice();
-                                          debugPrint(
-                                              'Incremented ${quantityOfItems[index]}');
-                                        });
-
-                                        // updateQuantity(categoryBasedFood[index],
-                                        //     quantityOfItems[index]);
-                                        //
-
-                                        int listIndexMainCart =
-                                            productsCartMain2.indexWhere(
-                                                (nestedList) => nestedList
-                                                    .contains(categoryBasedFood[
-                                                        index]));
-
-                                        debugPrint(
-                                            'productsCartMain2 : $productsCartMain2');
-
-                                        productsCartMain2.any((sublist) =>
-                                                sublist.contains(
-                                                    categoryBasedFood[index]))
-                                            ? (quantityOfItems[index] == 0)
-                                                ? productsCartMain2
-                                                    .removeAt(listIndexMainCart)
-                                                : productsCartMain2[
-                                                    listIndexMainCart] = [
-                                                    categoryBasedFood[index],
-                                                    quantityOfItems[index]
-                                                  ]
-                                            : productsCartMain2.add([
-                                                categoryBasedFood[index],
-                                                quantityOfItems[index]
-                                              ]);
-
-                                        debugPrint(
-                                            'productsCartMain2 : $productsCartMain2');
-
-                                        // bool containsValue =
-                                        //     productsInCart.any((sublist) => sublist.contains(product));
-
-                                        // debugPrint(containsValue.toString());
-
-                                        // context.read<Fooddata>().addToCartwithQuantity(productToCart);
-
-                                        debugPrint(
-                                            'Added to productsCartMain2 with qty Successfully');
-                                      },
-                                      icon: const Icon(
-                                        Icons.add,
-                                        size: 15,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ]),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Text(
-                                    // productName
-                                    categoryBasedFood[index]
-                                        .product!
-                                        .modelName
-                                        .toString(),
-                                    overflow: TextOverflow.fade,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  // '₹$sellingPrice',
-                                  categoryBasedFood[index]
-                                      .product!
-                                      .price
-                                      .toString(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: IconButton(
-                            //     onPressed: () async {
-                            //       await PersistentShoppingCart().addToCart(
-                            //         PersistentShoppingCartItem(
-                            //           productId: productid,
-                            //           productName: productName,
-                            //           productDescription: description,
-                            //           unitPrice: price,
-                            //           productThumbnail: imageUrl,
-                            //           quantity: 1,
-                            //         ),
-                            //       );
-                            //       addToCart(productid, category);
-                            //     },
-                            //     icon: SvgPicture.asset(
-                            //       'assets/icons/cart.svg',
-                            //       height: 30,
-                            //       color: primaryColor,
-                            //     ),
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: IconButton(
-                                onPressed: () {
-                                  showDetailsOfFood(
-                                      // description,
-                                      // imageUrl.toString(),
-
-                                      categoryBasedFood[index]
-                                          .product!
-                                          .productDescription
-                                          .toString(),
-                                      categoryBasedFood[index]
-                                          .product!
-                                          .primaryImage
-                                          .toString());
-                                },
-                                icon: const Icon(
-                                  Icons.info,
-                                  color: primaryColor,
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
 
-          // FutureBuilder<dynamic>(
-          //   future: fetchDataFromListJson(),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return const Center(child: CircularProgressIndicator());
-          //     } else if (snapshot.hasError) {
-          //       return const Center(
-          //         child: Text(
-          //           'Something went wrong',
-          //         ),
-          //       );
-          //     } else {
-          //       final data = snapshot.data;
-          //       if (data != null && data is List && data.isNotEmpty) {
-          //         return ListView.builder(
-          //           padding: const EdgeInsets.symmetric(
-          //             horizontal: 5,
-          //             vertical: 5,
-          //           ),
-          //           itemCount: data.length,
-          //           shrinkWrap: true,
-          //           primary: false,
-          //           itemBuilder: (context, index) {
-          //             final imageUrl =
-          //                 data[index]['product']['primary_image']?.toString();
-          //             final productName = data[index]['product']['model_name']
-          //                 .toString()
-          //                 .toUpperCase();
-          //             final sellingPrice = data[index]['product']['selling_price'];
-          //             dynamic myString = sellingPrice;
-          //             if (myString == String) {
-          //               double myDouble = double.parse(myString);
-          //               price = myDouble + price;
-          //             } else if (myString == int) {
-          //               price = sellingPrice + price;
-          //             }
-          //             final productid = data[index]['product']['product_id'];
-          //             final shopeid = data[index]['product']['food_id'];
-          //             final category = data[index]['category'];
-          //             final description =
-          //                 data[index]['product']['product_description'];
-          //             final quantity =
-          //                 ValueNotifier<int>(_cartItems[productid] ?? 0);
-          //             int quantity1 = 0;
-          //             void addToCarts(int quantity) {
-          //               debugPrint('quantity  ${quantity}');
-          //               setState(() {
-          //                 cartList.add(data[index]);
-          //                 _cartItems[productid] = quantity;
-          //                 rate = sellingPrice * quantity;
-          //               });
-          //             }
+                // FutureBuilder<dynamic>(
+                //   future: fetchDataFromListJson(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                //       return const Center(child: CircularProgressIndicator());
+                //     } else if (snapshot.hasError) {
+                //       return const Center(
+                //         child: Text(
+                //           'Something went wrong',
+                //         ),
+                //       );
+                //     } else {
+                //       final data = snapshot.data;
+                //       if (data != null && data is List && data.isNotEmpty) {
+                //         return ListView.builder(
+                //           padding: const EdgeInsets.symmetric(
+                //             horizontal: 5,
+                //             vertical: 5,
+                //           ),
+                //           itemCount: data.length,
+                //           shrinkWrap: true,
+                //           primary: false,
+                //           itemBuilder: (context, index) {
+                //             final imageUrl =
+                //                 data[index]['product']['primary_image']?.toString();
+                //             final productName = data[index]['product']['model_name']
+                //                 .toString()
+                //                 .toUpperCase();
+                //             final sellingPrice = data[index]['product']['selling_price'];
+                //             dynamic myString = sellingPrice;
+                //             if (myString == String) {
+                //               double myDouble = double.parse(myString);
+                //               price = myDouble + price;
+                //             } else if (myString == int) {
+                //               price = sellingPrice + price;
+                //             }
+                //             final productid = data[index]['product']['product_id'];
+                //             final shopeid = data[index]['product']['food_id'];
+                //             final category = data[index]['category'];
+                //             final description =
+                //                 data[index]['product']['product_description'];
+                //             final quantity =
+                //                 ValueNotifier<int>(_cartItems[productid] ?? 0);
+                //             int quantity1 = 0;
+                //             void addToCarts(int quantity) {
+                //               debugPrint('quantity  ${quantity}');
+                //               setState(() {
+                //                 cartList.add(data[index]);
+                //                 _cartItems[productid] = quantity;
+                //                 rate = sellingPrice * quantity;
+                //               });
+                //             }
 
-          //             // void removeFromCart(int quantity) {
-          //             //   setState(
-          //             //     () {
-          //             //       if (_cartItems.containsKey(data[index])) {
-          //             //         // final quantity = _cartItems[productId];
-          //             //         _cartItems.remove(data[index]);
-          //             //         rate = rate - sellingPrice;
-          //             //         // Update total price here (if implemented)
-          //             //       }
-          //             //     },
-          //             //   );
-          //             // }
+                //             // void removeFromCart(int quantity) {
+                //             //   setState(
+                //             //     () {
+                //             //       if (_cartItems.containsKey(data[index])) {
+                //             //         // final quantity = _cartItems[productId];
+                //             //         _cartItems.remove(data[index]);
+                //             //         rate = rate - sellingPrice;
+                //             //         // Update total price here (if implemented)
+                //             //       }
+                //             //     },
+                //             //   );
+                //             // }
 
-          //             void removeFromCart(int quantity) {
-          //               setState(
-          //                 () {
-          //                   if (_cartItems.containsKey(data[index])) {
-          //                     // final quantity = _cartItems[productId];
-          //                     _cartItems.remove(data[index]);
-          //                     // rate = rate - sellingPrice;
-          //                     rate = sellingPrice * quantity;
+                //             void removeFromCart(int quantity) {
+                //               setState(
+                //                 () {
+                //                   if (_cartItems.containsKey(data[index])) {
+                //                     // final quantity = _cartItems[productId];
+                //                     _cartItems.remove(data[index]);
+                //                     // rate = rate - sellingPrice;
+                //                     rate = sellingPrice * quantity;
 
-          //                     // Update total price here (if implemented)
-          //                   }
-          //                 },
-          //               );
-          //             }
+                //                     // Update total price here (if implemented)
+                //                   }
+                //                 },
+                //               );
+                //             }
 
-          //             // Function to handle increment button press
-          //             void incrementQuantity() {
-          //               quantity.value++;
-          //               // addToCarts(productid);
-          //               // Update the product quantity in your map (if applicable)
-          //               // ... (your logic to update the map)
-          //               addToCarts(quantity.value);
+                //             // Function to handle increment button press
+                //             void incrementQuantity() {
+                //               quantity.value++;
+                //               // addToCarts(productid);
+                //               // Update the product quantity in your map (if applicable)
+                //               // ... (your logic to update the map)
+                //               addToCarts(quantity.value);
 
-          //               // debugPrint('quantity ${quantity1}');
-          //             }
+                //               // debugPrint('quantity ${quantity1}');
+                //             }
 
-          //             // void decrementQuantity() async {
-          //             //   if (quantity.value >= 1) {
-          //             //     // Decrement quantity
-          //             //     quantity.value--;
-          //             //     // Trigger a rebuild of the widget
-          //             //     removeFromCart(index);
-          //             //     rate = rate - sellingPrice;
-          //             //   }
-          //             //   addToCarts(quantity.value);
-          //             // }
+                //             // void decrementQuantity() async {
+                //             //   if (quantity.value >= 1) {
+                //             //     // Decrement quantity
+                //             //     quantity.value--;
+                //             //     // Trigger a rebuild of the widget
+                //             //     removeFromCart(index);
+                //             //     rate = rate - sellingPrice;
+                //             //   }
+                //             //   addToCarts(quantity.value);
+                //             // }
 
-          //             void decrementQuantity() async {
-          //               if (quantity.value >= 1) {
-          //                 // Decrement quantity
-          //                 quantity.value--;
-          //                 // Trigger a rebuild of the widget
-          //                 addToCarts(quantity.value);
-          //                 debugPrint('quantity : ${quantity.value}');
-          //                 // rate = rate - sellingPrice;
-          //                 // removeFromCart(index);
-          //               } else {
-          //                 removeFromCart(index);
-          //               }
-          //             }
+                //             void decrementQuantity() async {
+                //               if (quantity.value >= 1) {
+                //                 // Decrement quantity
+                //                 quantity.value--;
+                //                 // Trigger a rebuild of the widget
+                //                 addToCarts(quantity.value);
+                //                 debugPrint('quantity : ${quantity.value}');
+                //                 // rate = rate - sellingPrice;
+                //                 // removeFromCart(index);
+                //               } else {
+                //                 removeFromCart(index);
+                //               }
+                //             }
 
-          //             return Padding(
-          //               padding: const EdgeInsets.all(8.0),
-          //               child: InkWell(
-          //                 onTap: () {
-          //                   Navigator.push(
-          //                     context,
-          //                     MaterialPageRoute(
-          //                       builder: (context) => GoToOrder(
-          //                         uId: userId,
-          //                         category: category,
-          //                         link: imageUrl,
-          //                         productId: productid,
-          //                         shopId: shopeid,
-          //                         totalPrice: sellingPrice,
-          //                       ),
-          //                     ),
-          //                   );
-          //                 },
-          //                 child: Container(
-          //                   decoration: const BoxDecoration(
-          //                     // color: Color.fromARGB(255, 249, 227, 253),
-          //                     borderRadius: BorderRadius.all(
-          //                       Radius.circular(20),
-          //                     ),
-          //                   ),
-          //                   child: Row(
-          //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //                     children: [
-          //                       Row(
-          //                         children: [
-          //                           Column(
-          //                             children: [
-          //                               SizedBox(
-          //                                 height: 100,
-          //                                 width: 100,
-          //                                 // color: const Color.fromARGB(
-          //                                 //     255, 249, 227, 253),
-          //                                 child: Padding(
-          //                                   padding: const EdgeInsets.all(8.0),
-          //                                   child:
-          //                                       Image.network(imageUrl.toString()),
-          //                                 ),
-          //                               ),
-          //                               Row(children: [
-          //                                 Container(
-          //                                   height: 30,
-          //                                   width: 30,
-          //                                   decoration: const BoxDecoration(
-          //                                     color: primaryColor,
-          //                                     borderRadius: BorderRadius.only(
-          //                                       topLeft: Radius.circular(5),
-          //                                       bottomLeft: Radius.circular(5),
-          //                                     ),
-          //                                   ),
-          //                                   child: IconButton(
-          //                                     onPressed: decrementQuantity,
-          //                                     icon: const Icon(
-          //                                       Icons.remove,
-          //                                       size: 15,
-          //                                       color: Colors.white,
-          //                                     ),
-          //                                   ),
-          //                                 ),
-          //                                 ValueListenableBuilder<int>(
-          //                                   valueListenable: quantity,
-          //                                   builder: (context, value, child) {
-          //                                     return Container(
-          //                                         decoration: BoxDecoration(
-          //                                           border: Border.all(
-          //                                             width: 1,
-          //                                             color: primaryColor,
-          //                                           ),
-          //                                         ),
-          //                                         alignment: Alignment.center,
-          //                                         height: 30,
-          //                                         width: 30,
-          //                                         child: Text(
-          //                                           '$value',
-          //                                         ));
-          //                                   },
-          //                                 ),
-          //                                 Container(
-          //                                   height: 30,
-          //                                   width: 30,
-          //                                   decoration: const BoxDecoration(
-          //                                     color: primaryColor,
-          //                                     borderRadius: BorderRadius.only(
-          //                                       topRight: Radius.circular(5),
-          //                                       bottomRight: Radius.circular(5),
-          //                                     ),
-          //                                   ),
-          //                                   child: IconButton(
-          //                                     onPressed: incrementQuantity,
-          //                                     icon: const Icon(
-          //                                       Icons.add,
-          //                                       size: 15,
-          //                                       color: Colors.white,
-          //                                     ),
-          //                                   ),
-          //                                 ),
-          //                               ]),
-          //                             ],
-          //                           ),
-          //                           Column(
-          //                             crossAxisAlignment: CrossAxisAlignment.start,
-          //                             children: [
-          //                               SizedBox(
-          //                                 width: MediaQuery.of(context).size.width *
-          //                                     0.5,
-          //                                 child: Text(
-          //                                   productName,
-          //                                   overflow: TextOverflow.fade,
-          //                                   style: const TextStyle(
-          //                                     fontWeight: FontWeight.bold,
-          //                                     fontSize: 18,
-          //                                   ),
-          //                                 ),
-          //                               ),
-          //                               Text(
-          //                                 '₹$sellingPrice',
-          //                                 style: const TextStyle(
-          //                                   fontWeight: FontWeight.bold,
-          //                                   fontSize: 16,
-          //                                 ),
-          //                               ),
-          //                             ],
-          //                           )
-          //                         ],
-          //                       ),
-          //                       Column(
-          //                         children: [
-          //                           // Padding(
-          //                           //   padding: const EdgeInsets.all(8.0),
-          //                           //   child: IconButton(
-          //                           //     onPressed: () async {
-          //                           //       await PersistentShoppingCart().addToCart(
-          //                           //         PersistentShoppingCartItem(
-          //                           //           productId: productid,
-          //                           //           productName: productName,
-          //                           //           productDescription: description,
-          //                           //           unitPrice: price,
-          //                           //           productThumbnail: imageUrl,
-          //                           //           quantity: 1,
-          //                           //         ),
-          //                           //       );
-          //                           //       addToCart(productid, category);
-          //                           //     },
-          //                           //     icon: SvgPicture.asset(
-          //                           //       'assets/icons/cart.svg',
-          //                           //       height: 30,
-          //                           //       color: primaryColor,
-          //                           //     ),
-          //                           //   ),
-          //                           // ),
-          //                           Padding(
-          //                             padding: const EdgeInsets.all(8.0),
-          //                             child: IconButton(
-          //                               onPressed: () {
-          //                                 showDetailsOfFood(
-          //                                   description,
-          //                                   imageUrl.toString(),
-          //                                 );
-          //                               },
-          //                               icon: const Icon(
-          //                                 Icons.info,
-          //                                 color: primaryColor,
-          //                               ),
-          //                             ),
-          //                           ),
-          //                         ],
-          //                       ),
-          //                     ],
-          //                   ),
-          //                 ),
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       } else {
-          //         // Handle the case where data is null
-          //         return const Scaffold(
-          //           body: Center(
-          //             child: Text('No Product found'),
-          //           ),
-          //         );
-          //       }
-          //     }
-          //   },
-          // ),
-        ],
-      ),
+                //             return Padding(
+                //               padding: const EdgeInsets.all(8.0),
+                //               child: InkWell(
+                //                 onTap: () {
+                //                   Navigator.push(
+                //                     context,
+                //                     MaterialPageRoute(
+                //                       builder: (context) => GoToOrder(
+                //                         uId: userId,
+                //                         category: category,
+                //                         link: imageUrl,
+                //                         productId: productid,
+                //                         shopId: shopeid,
+                //                         totalPrice: sellingPrice,
+                //                       ),
+                //                     ),
+                //                   );
+                //                 },
+                //                 child: Container(
+                //                   decoration: const BoxDecoration(
+                //                     // color: Color.fromARGB(255, 249, 227, 253),
+                //                     borderRadius: BorderRadius.all(
+                //                       Radius.circular(20),
+                //                     ),
+                //                   ),
+                //                   child: Row(
+                //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //                     children: [
+                //                       Row(
+                //                         children: [
+                //                           Column(
+                //                             children: [
+                //                               SizedBox(
+                //                                 height: 100,
+                //                                 width: 100,
+                //                                 // color: const Color.fromARGB(
+                //                                 //     255, 249, 227, 253),
+                //                                 child: Padding(
+                //                                   padding: const EdgeInsets.all(8.0),
+                //                                   child:
+                //                                       Image.network(imageUrl.toString()),
+                //                                 ),
+                //                               ),
+                //                               Row(children: [
+                //                                 Container(
+                //                                   height: 30,
+                //                                   width: 30,
+                //                                   decoration: const BoxDecoration(
+                //                                     color: primaryColor,
+                //                                     borderRadius: BorderRadius.only(
+                //                                       topLeft: Radius.circular(5),
+                //                                       bottomLeft: Radius.circular(5),
+                //                                     ),
+                //                                   ),
+                //                                   child: IconButton(
+                //                                     onPressed: decrementQuantity,
+                //                                     icon: const Icon(
+                //                                       Icons.remove,
+                //                                       size: 15,
+                //                                       color: Colors.white,
+                //                                     ),
+                //                                   ),
+                //                                 ),
+                //                                 ValueListenableBuilder<int>(
+                //                                   valueListenable: quantity,
+                //                                   builder: (context, value, child) {
+                //                                     return Container(
+                //                                         decoration: BoxDecoration(
+                //                                           border: Border.all(
+                //                                             width: 1,
+                //                                             color: primaryColor,
+                //                                           ),
+                //                                         ),
+                //                                         alignment: Alignment.center,
+                //                                         height: 30,
+                //                                         width: 30,
+                //                                         child: Text(
+                //                                           '$value',
+                //                                         ));
+                //                                   },
+                //                                 ),
+                //                                 Container(
+                //                                   height: 30,
+                //                                   width: 30,
+                //                                   decoration: const BoxDecoration(
+                //                                     color: primaryColor,
+                //                                     borderRadius: BorderRadius.only(
+                //                                       topRight: Radius.circular(5),
+                //                                       bottomRight: Radius.circular(5),
+                //                                     ),
+                //                                   ),
+                //                                   child: IconButton(
+                //                                     onPressed: incrementQuantity,
+                //                                     icon: const Icon(
+                //                                       Icons.add,
+                //                                       size: 15,
+                //                                       color: Colors.white,
+                //                                     ),
+                //                                   ),
+                //                                 ),
+                //                               ]),
+                //                             ],
+                //                           ),
+                //                           Column(
+                //                             crossAxisAlignment: CrossAxisAlignment.start,
+                //                             children: [
+                //                               SizedBox(
+                //                                 width: MediaQuery.of(context).size.width *
+                //                                     0.5,
+                //                                 child: Text(
+                //                                   productName,
+                //                                   overflow: TextOverflow.fade,
+                //                                   style: const TextStyle(
+                //                                     fontWeight: FontWeight.bold,
+                //                                     fontSize: 18,
+                //                                   ),
+                //                                 ),
+                //                               ),
+                //                               Text(
+                //                                 '₹$sellingPrice',
+                //                                 style: const TextStyle(
+                //                                   fontWeight: FontWeight.bold,
+                //                                   fontSize: 16,
+                //                                 ),
+                //                               ),
+                //                             ],
+                //                           )
+                //                         ],
+                //                       ),
+                //                       Column(
+                //                         children: [
+                //                           // Padding(
+                //                           //   padding: const EdgeInsets.all(8.0),
+                //                           //   child: IconButton(
+                //                           //     onPressed: () async {
+                //                           //       await PersistentShoppingCart().addToCart(
+                //                           //         PersistentShoppingCartItem(
+                //                           //           productId: productid,
+                //                           //           productName: productName,
+                //                           //           productDescription: description,
+                //                           //           unitPrice: price,
+                //                           //           productThumbnail: imageUrl,
+                //                           //           quantity: 1,
+                //                           //         ),
+                //                           //       );
+                //                           //       addToCart(productid, category);
+                //                           //     },
+                //                           //     icon: SvgPicture.asset(
+                //                           //       'assets/icons/cart.svg',
+                //                           //       height: 30,
+                //                           //       color: primaryColor,
+                //                           //     ),
+                //                           //   ),
+                //                           // ),
+                //                           Padding(
+                //                             padding: const EdgeInsets.all(8.0),
+                //                             child: IconButton(
+                //                               onPressed: () {
+                //                                 showDetailsOfFood(
+                //                                   description,
+                //                                   imageUrl.toString(),
+                //                                 );
+                //                               },
+                //                               icon: const Icon(
+                //                                 Icons.info,
+                //                                 color: primaryColor,
+                //                               ),
+                //                             ),
+                //                           ),
+                //                         ],
+                //                       ),
+                //                     ],
+                //                   ),
+                //                 ),
+                //               ),
+                //             );
+                //           },
+                //         );
+                //       } else {
+                //         // Handle the case where data is null
+                //         return const Scaffold(
+                //           body: Center(
+                //             child: Text('No Product found'),
+                //           ),
+                //         );
+                //       }
+                //     }
+                //   },
+                // ),
+              ],
+            ),
       bottomNavigationBar: Row(
         children: [
           Expanded(
